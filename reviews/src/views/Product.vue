@@ -5,12 +5,10 @@
 </template>
 
 <script>
-  import ReviewList from "../components/ReviewList.vue"
   import AllReviews from "../components/AllReviews.vue"
   export default {
     name: 'Product',
     components: {
-      ReviewList,
       AllReviews
     },
     computed: {
