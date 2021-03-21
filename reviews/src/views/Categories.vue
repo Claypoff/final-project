@@ -47,7 +47,7 @@
 <style>
   .pure-menu-horizontal {
     width: 100%;
-    white-space: nowrap;
+    white-space: normal;
     text-align: center !important;
   }
 
