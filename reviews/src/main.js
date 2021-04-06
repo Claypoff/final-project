@@ -1,15 +1,18 @@
 import Vue from 'vue';
 import App from './App.vue';
 import router from "./router";
-import mock from './mock-data.js'
+import catalog from './catalog.js'
 
 Vue.config.productionTip = false;
 
 let data = {
-  items: mock,
+  items: catalog,
   itemId: 0,
   reveiwerName: "",
-  reviewItem: {},
+  reviewItem: {
+    itemId: 0,
+    description: "Please go back to the main page and select an item to review."
+  },
   itemReviews: []
 }
 

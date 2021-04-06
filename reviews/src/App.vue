@@ -1,7 +1,7 @@
 <template>
   <div id="app">
     <div id="menu">
-      <h1>Get Reviews!</h1>
+      <h1>Better Reviews!</h1>
       <router-link to="/">
         <img src="/images/logo.png">
       </router-link>
@@ -9,7 +9,7 @@
     <router-view />
 
     <div class="footer">
-      <a class="footer-item" target="_blank" href="https://github.com/Claypoff/Creative3">Github Project Repository Link</a>
+      <a class="footer-item" target="_blank" href="https://github.com/Claypoff/Creative4">Github Project Repository Link</a>
     </div>
 
   </div>
@@ -20,6 +20,11 @@ export default {
   name: 'App',
   data() {
     return {
+    }
+  },
+  created() {
+    if(this.$router.path !== "/") {
+      this.$router.replace("/")
     }
   },
 }

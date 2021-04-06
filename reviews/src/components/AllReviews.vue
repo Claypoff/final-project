@@ -1,7 +1,6 @@
 <template>
     <div class="items">
       <div class="product">
-
         <h1 style="text-align:center;">{{this.$root.$data.reviewItem.name}}</h1>
 
         <h3 style="text-align:center;">Category: {{this.$root.$data.reviewItem.category}}</h3>
@@ -13,7 +12,7 @@
         <h1 style="text-align:center;">description:</h1>
         <p style="text-align:center;">
           {{this.$root.$data.reviewItem.description}}
-        <p>
+        </p>
 
         <div class="price">
           <h3 style="text-align:center;">this item usually costs around {{this.$root.$data.reviewItem.price}}</h3>
@@ -22,24 +21,38 @@
         <div class="newReview">
           <h1 style="text-align:center;">Add a Review</h1>
           <form style="width:100%;" v-on:submit.prevent="addUserReview">
-            <input v-model="name" placeholder="Reviewer Name">
+            <input v-model="author" placeholder="Reviewer Name">
             <br>
             <input v-model="title" placeholder="review title">
             <br>
-            <textarea v-model="addReview"></textarea>
+            <textarea v-model="text"></textarea>
             <br>
             <button type="submit">Add Review</button>
           </form>
         </div>
         <br><br>
-        <div class="for-reviews" v-for="review in reviews" :key="review.date">
+        <div class="for-reviews" v-for="review in activeReviews" :key="review._id">
           <h1 style="text-align:center;">{{review.title}}</h1>
           <h3 style="margin-left:8px;">By: {{review.author}}</h3>
           <p style="text-align:center;font-size:21px;margin:10px;">{{review.text}}</p>
           <br>
           <p style="margin-left:8px;">{{review.date}}</p>
           <div class="right">
-            <button @click="removeReview(review.title)" class="delete">Delete this review</button>
+            <button @click="changeReview(review)" class="delete" style="background-color:#ffda62;">Edit</button>
+            <button @click="deleteReview(review)" class="delete">Delete this review</button>
+          </div>
+
+          <div class="upload" v-if="editItem">
+            <br/>
+            <input v-model="editItem.title" style="text-align:center;"/>
+            <br/>
+            <input v-model="editItem.author" style="text-align:center;">
+            <br/>
+            <textarea v-model="editItem.text" rows="4" cols="20"></textarea>
+
+            <div class="center">
+              <button @click="editReview()" class="edit">Save Changes</button>
+            </div>
           </div>
         </div>
 
@@ -49,6 +62,7 @@
 </template>
 
 <script>
+  import axios from 'axios';
   export default {
     name: 'AllReviews',
     props: {
@@ -56,28 +70,81 @@
     },
     data() {
       return {
-        name: '',
-        addReview: '',
-        title: ''
+        itemId: this.$root.$data.reviewItem.id,
+        title: "",
+        author: "",
+        text: "",
+        date: new Date().toLocaleString().split(',')[0],
+        reviewList: [],
+        editItem: null
+      }
+    },
+    created() {
+      this.getReviews();
+    },
+    computed: {
+      activeReviews() {
+        return this.reviewList;
       }
     },
     methods: {
-        addUserReview() {
-          this.$root.$data.items[this.$root.$data.reviewItem.id - 1].reviews.push({
-            date: new Date().toLocaleString().split(',')[0],
-            author: this.name,
-            text: this.addReview,
-            title: this.title
-          })
+        async addUserReview() {
+        try {
+          let rep = await axios.post('/api/reviews', {
+            itemId: this.itemId,
+            title: this.title,
+            author: this.author,
+            text: this.text,
+            date: this.date
+      });
+      this.reviewList.push(rep.data);
 
-          this.name = ''
-          this.addReview = ''
-          this.title = ''
-        },
-        removeReview(title) {
-          this.$root.$data.items[this.$root.$data.reviewItem.id - 1].reviews.splice(this.$root.$data.items[this.$root.$data.reviewItem.id - 1].reviews.map(function(e) { return e.title; }).indexOf(title), 1);
+      this.text = ''
+      this.author = ''
+      this.title = ''
+    } catch (error) {
+      console.log(error);
+    }
+     },
+       async getReviews() {
+         try {
+          const response = await axios.get("/api/reviews/" + this.itemId);
+          console.log(response.data)
+          this.reviewList = response.data;
+        } catch (error) {
+          console.log(error);
         }
-     }
+     },
+      async deleteReview(selectedReview) {
+      try {
+        await axios.delete("/api/reviews/" + selectedReview._id);
+
+        await this.getReviews()
+        this.editItem = null
+      } catch (error) {
+        console.log(error);
+      }
+      },
+      async editReview() {
+        try {
+         axios.put('/api/reviews/' + this.editItem._id, {
+            itemId: this.editItem.itemId,
+            title: this.editItem.title,
+            author: this.editItem.author,
+            text: this.editItem.text,
+            date: new Date().toLocaleString().split(',')[0]
+          });
+
+          this.editItem = null
+
+        } catch (error) {
+          console.log(error)
+        }
+      },
+      changeReview(item) {
+        this.editItem = item;
+      },
+    }
   }
 </script>
 
@@ -168,15 +235,35 @@ textarea {
   margin: 8px;
 }
 
+.edit {
+  height: 25px;
+  background: #7DD3D8;
+  color: black;
+  border: 2px solid #000000;
+  margin: 8px;
+}
+
 .right {
   display: flex;
   justify-content: flex-end;
+}
+
+.center {
+  display: flex;
+  justify-content: center;
 }
 
 .for-reviews {
   background: #D3D3D3;
   border: 2px solid #000000;
   margin: 10px;
+}
+
+.upload {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: center;
 }
 
 .auto {
