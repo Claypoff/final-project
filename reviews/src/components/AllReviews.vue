@@ -42,7 +42,7 @@
             <button @click="deleteReview(review)" class="delete">Delete this review</button>
           </div>
 
-          <div class="upload" v-if="editItem">
+          <div class="upload" v-if="editItem && editItem._id === review._id">
             <br/>
             <input v-model="editItem.title" style="text-align:center;"/>
             <br/>
