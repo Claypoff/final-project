@@ -1,15 +1,20 @@
 <template>
   <div id="app">
     <div id="menu">
-      <h1>Better Reviews!</h1>
+      <h1>Best Reviews!</h1>
+      <div id="side">
+        <router-link to="/profile"><i class="fas fa-user fa-3x" style="display:flex;flex-direction: column;"></i>Profile</router-link>
+      </div>
       <router-link to="/">
         <img src="/images/logo.png">
       </router-link>
+
     </div>
+
     <router-view />
 
     <div class="footer">
-      <a class="footer-item" target="_blank" href="https://github.com/Claypoff/Creative4">Github Project Repository Link</a>
+      <a class="footer-item" target="_blank" href="https://github.com/Claypoff/final-project">Github Project Repository Link</a>
     </div>
 
   </div>
@@ -50,6 +55,14 @@ body {
   grid-area: brand;
   display: flex;
   justify-content: center;
+}
+
+#side {
+  grid-area: side;
+  display: flex;
+  justify-content: flex-end;
+  align-self: flex-end;
+  margin-right: 15%;
 }
 
 img {

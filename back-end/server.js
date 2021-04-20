@@ -4,7 +4,7 @@ const mongoose = require('mongoose');
 
 const app = express();
 
-// parse application/x-www-form-urlencoded
+app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({
   extended: false
 }));
@@ -18,11 +18,29 @@ mongoose.connect('mongodb://localhost:27017/review', {
   useUnifiedTopology: true
 });
 
+const cookieParser = require("cookie-parser");
+app.use(cookieParser());
+
+const cookieSession = require('cookie-session');
+app.use(cookieSession({
+  name: 'session',
+  keys: [
+    'secretValue'
+  ],
+  cookie: {
+    maxAge: 24 * 60 * 60 * 1000 // 24 hours
+  }
+}));
+
+// import the users module and setup its API path
+const users = require("./users.js");
+app.use("/api/users", users.routes);
+
 // Create a scheme for reviews
 const reviewSchema = new mongoose.Schema({
   itemId: Number,
   title: String,
-  author: String,
+  user: String,
   text: String,
   date: String
 });
@@ -35,7 +53,7 @@ app.post('/api/reviews', async (req, res) => {
   const review = new Review({
     itemId: req.body.itemId,
     title: req.body.title,
-    author: req.body.author,
+    user: req.body.author,
     text: req.body.text,
     date: req.body.date
   });
@@ -77,7 +95,6 @@ app.put('/api/reviews/:id', async (req, res) => {
       _id: req.params.id
     });
     item.title= req.body.title,
-    item.author= req.body.author,
     item.text= req.body.text,
     item.date= req.body.date
 
@@ -88,4 +105,20 @@ app.put('/api/reviews/:id', async (req, res) => {
   }
 });
 
-app.listen(3000, () => console.log('Server listening on port 3000!'));
+app.get('/api/userReviews/:user', async (req, res) => {
+  try {
+    let reviews = await Review.find({user: req.params.user});
+    let items = [];
+    for (let i = 0; i < reviews.length; i++) {
+        if (!items.includes(reviews[i].itemId)) {
+            items.push(reviews[i].itemId)
+        }
+    }
+    res.send(items);
+  } catch (error) {
+    console.log(error);
+    res.sendStatus(500);
+  }
+});
+
+app.listen(3003, () => console.log('Server listening on port 3003!'));

@@ -1,7 +1,7 @@
 <template>
   <div>
     <div style="text-align:center;font-size:16px;padding-left:5%;padding-right:5%;padding-bottom:35px;">
-      Welcome to Get Reviews! This website offers a variety of different items that you can read, add, and delete reviews from. Here is a catalog of all the items that we currently
+      Welcome to Best Reviews! This website offers a variety of different items that you can read, add, and delete reviews from. Here is a catalog of all the items that we currently
       support. If you would rather search for items by categories, click on the 'search by categories' button.
     </div>
 

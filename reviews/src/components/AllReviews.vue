@@ -18,11 +18,9 @@
           <h3 style="text-align:center;">this item usually costs around {{this.$root.$data.reviewItem.price}}</h3>
         </div>
 
-        <div class="newReview">
+        <div class="newReview" v-if="this.$root.$data.user">
           <h1 style="text-align:center;">Add a Review</h1>
           <form style="width:100%;" v-on:submit.prevent="addUserReview">
-            <input v-model="author" placeholder="Reviewer Name">
-            <br>
             <input v-model="title" placeholder="review title">
             <br>
             <textarea v-model="text"></textarea>
@@ -30,14 +28,19 @@
             <button type="submit">Add Review</button>
           </form>
         </div>
+        <div style="text-align:center;font-size:18px;color:red;" v-else>
+          <br>
+          You are currently not signed in. Register or sign in to be able to write, edit, and delete your reviews!
+        </div>
         <br><br>
+        <h2 style="text-align:center;">All Reviews for this item</h2>
         <div class="for-reviews" v-for="review in activeReviews" :key="review._id">
           <h1 style="text-align:center;">{{review.title}}</h1>
-          <h3 style="margin-left:8px;">By: {{review.author}}</h3>
+          <h3 style="margin-left:8px;">By: {{review.user}}</h3>
           <p style="text-align:center;font-size:21px;margin:10px;">{{review.text}}</p>
           <br>
           <p style="margin-left:8px;">{{review.date}}</p>
-          <div class="right">
+          <div class="right" v-if="$root.$data.user && review.user === $root.$data.user.username">
             <button @click="changeReview(review)" class="delete" style="background-color:#ffda62;">Edit</button>
             <button @click="deleteReview(review)" class="delete">Delete this review</button>
           </div>
@@ -45,8 +48,6 @@
           <div class="upload" v-if="editItem && editItem._id === review._id">
             <br/>
             <input v-model="editItem.title" style="text-align:center;"/>
-            <br/>
-            <input v-model="editItem.author" style="text-align:center;">
             <br/>
             <textarea v-model="editItem.text" rows="4" cols="20"></textarea>
 
@@ -72,11 +73,11 @@
       return {
         itemId: this.$root.$data.reviewItem.id,
         title: "",
-        author: "",
         text: "",
         date: new Date().toLocaleString().split(',')[0],
         reviewList: [],
-        editItem: null
+        editItem: null,
+        username: this.$root.$data.user
       }
     },
     created() {
@@ -93,14 +94,13 @@
           let rep = await axios.post('/api/reviews', {
             itemId: this.itemId,
             title: this.title,
-            author: this.author,
+            author: this.$root.$data.user.username,
             text: this.text,
             date: this.date
       });
       this.reviewList.push(rep.data);
 
       this.text = ''
-      this.author = ''
       this.title = ''
     } catch (error) {
       console.log(error);
@@ -130,7 +130,6 @@
          axios.put('/api/reviews/' + this.editItem._id, {
             itemId: this.editItem.itemId,
             title: this.editItem.title,
-            author: this.editItem.author,
             text: this.editItem.text,
             date: new Date().toLocaleString().split(',')[0]
           });

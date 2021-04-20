@@ -6,6 +6,7 @@ import catalog from './catalog.js'
 Vue.config.productionTip = false;
 
 let data = {
+  user: null,
   items: catalog,
   itemId: 0,
   reveiwerName: "",

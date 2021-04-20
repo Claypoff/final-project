@@ -3,6 +3,7 @@ import VueRouter from "vue-router";
 import Home from "../views/Home.vue";
 import Categories from '../views/Categories.vue'
 import Product from '../views/Product.vue'
+import Profile from '../views/Profile.vue'
 
 Vue.use(VueRouter);
 
@@ -21,6 +22,11 @@ const routes = [
       path: '/Product',
       name: 'Product',
       component: Product,
+  },
+  {
+    path: '/profile',
+    name: 'Profile',
+    component: Profile
   },
 ];
 
