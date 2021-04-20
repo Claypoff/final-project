@@ -15,6 +15,9 @@
 
     <div class="footer">
       <a class="footer-item" target="_blank" href="https://github.com/Claypoff/final-project">Github Project Repository Link</a>
+      <br>
+      <div>Hours spent on this project: 6.5</div>
+
     </div>
 
   </div>
@@ -75,6 +78,7 @@ h1 {
 
 .footer {
   display: flex;
+  flex-direction: column;
   height: 75px;
   width: 100%;
   background-color: #70bf44;

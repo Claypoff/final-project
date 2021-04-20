@@ -13,7 +13,7 @@ app.use(bodyParser.urlencoded({
 app.use(bodyParser.json());
 
 // connect to the database
-mongoose.connect('mongodb://localhost:27017/review', {
+mongoose.connect('mongodb://localhost:27017/reviews', {
   useNewUrlParser: true,
   useUnifiedTopology: true
 });
